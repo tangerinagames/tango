@@ -10,6 +10,10 @@ namespace TangoInputDeviceID {
 
 namespace TangoInputDeviceSensorID {
   enum {
+    JOYSTICK_1,
+    JOYSTICK_2,
+    JOYSTICK_3,
+    JOYSTICK_4,
     KEYBOARD,
     POINTER,
     MOUSE_LEFT,

@@ -7,8 +7,30 @@
 #include <aku/AKU-luaext.h>
 #include <aku/AKU-untz.h>
 
-
+#define NUM_JOYS 4
 #define LOG(arg) std::cout << arg << std::endl;
+
+
+static void joystickButtonThread(void *arg)
+{
+  int numbuttons = glfwGetJoystickParam(GLFW_JOYSTICK_1, GLFW_BUTTONS);
+  unsigned char *prevButtons = new unsigned char[numbuttons];
+  unsigned char *buttons = new unsigned char[numbuttons];
+  std::fill_n(prevButtons, numbuttons, GLFW_RELEASE);
+
+  while (true)
+  {
+    glfwGetJoystickButtons(GLFW_JOYSTICK_1, buttons, numbuttons);
+    for (int button = 0; button < numbuttons; button++)
+    {
+      if (buttons[button] != prevButtons[button])
+      {
+        AKUEnqueueJoystickEvent(TangoInputDeviceID::DEVICE, TangoInputDeviceSensorID::JOYSTICK_1, button, buttons[button] == GLFW_PRESS);
+      }
+    }
+    memcpy(prevButtons, buttons, numbuttons);
+  }
+}
 
 
 static void keyEventHandler(int key, int action)
@@ -80,6 +102,7 @@ static void openWindow(const char* title, int width, int height)
   glfwSetKeyCallback(keyEventHandler);
   glfwSetMouseButtonCallback(mouseButtonEventHandler);
   glfwSetMousePosCallback(mousePosEventHandler);
+  glfwCreateThread(joystickButtonThread, NULL);
 
   AKUDetectGfxContext();
   AKUSetScreenSize(width, height);
@@ -108,6 +131,10 @@ static void createContext()
   AKUSetInputDeviceButton(TangoInputDeviceID::DEVICE, TangoInputDeviceSensorID::MOUSE_LEFT, "mouseLeft");
   AKUSetInputDeviceButton(TangoInputDeviceID::DEVICE, TangoInputDeviceSensorID::MOUSE_MIDDLE, "mouseMiddle");
   AKUSetInputDeviceButton(TangoInputDeviceID::DEVICE, TangoInputDeviceSensorID::MOUSE_RIGHT, "mouseRight");
+  AKUSetInputDeviceJoystick(TangoInputDeviceID::DEVICE, TangoInputDeviceSensorID::JOYSTICK_1, "joystick1");
+  AKUSetInputDeviceJoystick(TangoInputDeviceID::DEVICE, TangoInputDeviceSensorID::JOYSTICK_2, "joystick2");
+  AKUSetInputDeviceJoystick(TangoInputDeviceID::DEVICE, TangoInputDeviceSensorID::JOYSTICK_3, "joystick3");
+  AKUSetInputDeviceJoystick(TangoInputDeviceID::DEVICE, TangoInputDeviceSensorID::JOYSTICK_4, "joystick4");
 
   AKUSetFunc_EnterFullscreenMode(enterFullscreenMode);
   AKUSetFunc_ExitFullscreenMode(exitFullscreenMode);

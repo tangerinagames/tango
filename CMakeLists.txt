@@ -7,10 +7,12 @@ project(${project_name})
 set(CMAKE_OSX_ARCHITECTURES i386 CACHE STRING "do not build for 64-bit" FORCE)
 set(ARCH i386)
 
+set(MOAI_DEV ../moai-dev) # tangerinagames/moai-dev branch: joystick
+
 set(${project_name}_include
   include
   lib/osx/glfw/include
-  ../moai-dev/src # tag: Version-1.4p0
+  ${MOAI_DEV}/src
 )
 
 file(GLOB_RECURSE ${project_name}_sources src/*.cpp)
