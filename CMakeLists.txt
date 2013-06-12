@@ -45,6 +45,8 @@ set_property(TARGET moai-osx-3rdparty PROPERTY IMPORTED_LOCATION lib/osx/moai/li
 find_library(cocoa Cocoa)
 find_library(iokit IOKit)
 find_library(opengl OpenGL)
+find_library(audiotoolbox AudioToolbox)
+find_library(audiounit AudioUnit)
 find_library(system system)
 find_library(crypto crypto)
 find_library(ssl ssl)
@@ -59,6 +61,8 @@ set(${project_name}_libraries
   ${cocoa}
   ${iokit}
   ${opengl}
+  ${audiotoolbox}
+  ${audiounit}
   ${system}
   ${crypto}
   ${ssl}
